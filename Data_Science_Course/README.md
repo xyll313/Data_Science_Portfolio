@@ -15,4 +15,5 @@ https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/699b9231-0ef4-4b17-b19
 
 (6) dash_project.py: a more complicated dash webapp with interactive display
 
-(7) Exercise on Classification methods (KNN, Decision Tree, Support Vector Machine, Logistic Regression) is available at: 
+(7) Exercise on Classification methods (KNN, Decision Tree, Support Vector Machine, Logistic Regression) is available at:
+https://dataplatform.cloud.ibm.com/analytics/notebooks/v2/b68fa923-8a2d-40cc-b4a5-9ba5cd283b31/view?access_token=512edb99c677e630bc7e5b40dc05572c1029a48d7d8594de4ebbec9ec46ba36

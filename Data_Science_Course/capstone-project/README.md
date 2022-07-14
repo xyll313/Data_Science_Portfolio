@@ -18,8 +18,8 @@ Findings can be find in **report-version2.pdf**
 
 ---
 
-**4_EDA_visualisation.ipynb**: EDA on scrabbed data
-                             Analysed，plotted graphs showing relationships between variables 
+**4_EDA_visualisation.ipynb**: EDA on scrabbed data. Analysed，plotted graphs showing relationships between variables 
+
 ---
 
 **5_Launch_site_location.ipynb**: Analysation on Location using Folium 

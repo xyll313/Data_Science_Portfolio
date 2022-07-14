@@ -1,6 +1,7 @@
 ## This captstone predicts if **the Falcon 9 first stage will land successfully**
 
 Findings can be find in **report-version2.pdf**
+
 ---
 
 **1_Request_Data.ipynb**: request to the SpaceX API and clean the requested data

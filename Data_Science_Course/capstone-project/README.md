@@ -30,8 +30,10 @@ Findings can be find in **report-version2.pdf**
                            (logistic regression, support vector machine, KNN, decision tree)
           
 ![image](https://user-images.githubusercontent.com/29717509/178998158-7731a066-b035-4c78-a4b3-b2047d4461d6.png)
-
 (Logistic regression, support vector machine and KNN gives the above confusion matrix with accuracy score of 0.83)
+
+---
+**Dash.py**: code for creating Dash Webapp
                            
 
 

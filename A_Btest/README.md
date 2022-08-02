@@ -1,4 +1,4 @@
-##Project Background 
+## Project Background 
 
 An app, **KITTENGRAM** allows users to post pictures of their cats and the other users can like or comments the pictures. Only cats are allowed in the app.
 
@@ -10,7 +10,7 @@ We decide to use 2 KPIs to study if the new Ads structure does give an improvmen
 * **H0**: tailered ads have no effect on the user engagement - will not affect selected KPIs
 * **H1**: tailered ads increase selected KPIs
 
-##Results
+## Results
 ### 1. Daily Active Users (DAU)
 
 Figure 1 shows a significant increase in user activity in terms of DAU with good consistency (ensures our results are not affected by Novelty effect) over time since the test started. 

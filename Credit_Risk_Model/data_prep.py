@@ -65,12 +65,12 @@ loan_data['mths_since_earliest_cr_line'] = round(pd.to_numeric(loan_data['earlie
 
 #last_pymnt_d::last payment date
 loan_data['last_pymnt_d_string'] = pd.to_datetime(loan_data['last_pymnt_d'],format = '%b-%y')
-loan_data['last_pymnt_d_string'].fillna(pd.to_datetime('2007-12-01'))
+loan_data['last_pymnt_d_string'].fillna(pd.to_datetime('2007-12-01'),inplace = True)
 loan_data['mths_since_last_delinq'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_pymnt_d_string'])/np.timedelta64(1,'M')))
 
 #last_credit_pull_d:: last credit pull date
 loan_data['last_credit_pull_d_string'] = pd.to_datetime(loan_data['last_credit_pull_d'],format = '%b-%y')
-loan_data['last_credit_pull_d_string'].fillna(pd.to_datetime('2007-05-01'))
+loan_data['last_credit_pull_d_string'].fillna(pd.to_datetime('2007-05-01'),inplace = True)
 loan_data['mths_since_last_record'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_credit_pull_d_string'])/np.timedelta64(1,'M')))
 
 '''
@@ -84,12 +84,13 @@ loan_data_dummies = [pd.get_dummies(loan_data['grade'],prefix = 'grade', prefix_
                      pd.get_dummies(loan_data['home_ownership'], prefix = 'home_ownership', prefix_sep = ':'),
                      pd.get_dummies(loan_data['verification_status'], prefix = 'verification_status', prefix_sep = ':'),
                      pd.get_dummies(loan_data['loan_status'], prefix = 'loan_status', prefix_sep = ':'),
-                     pd.get_dummies(loan_data['initial_list_status'], prefix = 'initial_list_status', prefix_sep = ':'),
                      pd.get_dummies(loan_data['purpose'], prefix = 'purpose', prefix_sep = ':'),
-                     pd.get_dummies(loan_data['addr_state'], prefix = 'addr_state', prefix_sep = ':')]
+                     pd.get_dummies(loan_data['initial_list_status'], prefix = 'initial_list_status', prefix_sep = ':'),
+                    pd.get_dummies(loan_data['addr_state'], prefix = 'addr_state', prefix_sep = ':')]
     
 loan_data_dummies = pd.concat(loan_data_dummies, axis = 1)
-loan_data = pd.concat([loan_data,loan_data_dummies])
+loan_data = pd.concat([loan_data,loan_data_dummies],axis = 1)
+
 
 '''
 fill missing values
@@ -128,23 +129,23 @@ loan_data_inputs_train, loan_data_inputs_test, loan_data_targets_train, loan_dat
 
 for counts in range(0,2):
         
-   # df_inputs_prepr = loan_data_inputs_train
-   # df_targets_prepr = loan_data_targets_train
+    df_inputs_prepr = loan_data_inputs_train
+    df_targets_prepr = loan_data_targets_train
     
     if counts == 1:
         df_inputs_prepr = loan_data_inputs_test
         df_targets_prepr = loan_data_targets_test
     else:
-        continue
+        pass
     '''
     Independent variables - Discrete variables
     grade, sub_grade, home_ownership, verification_status,loan_status, initial_list_status, purpose, add_state
     We observed trends in WoE and decided on how we combine discrete values 
-    '''   
+    '''
     #grade - we keep everything
     
     #home_ownership - combine RENT/OTHER/NONE/ANY as they have similar WoE
-    df_inputs_prepr['home_ownership: RENT_OTHER_NONE_ANY'] = df_inputs_prepr['home_ownership'] - df_inputs_prepr['home_ownership:OWN'] - df_inputs_prepr['home_ownership:MORTGAGE']
+    df_inputs_prepr['home_ownership: RENT_OTHER_NONE_ANY'] = 1 - df_inputs_prepr['home_ownership:OWN'] - df_inputs_prepr['home_ownership:MORTGAGE']
     
     #check if ND is included in addr_states
     if ['addr_state:ND'] in df_inputs_prepr.columns.values:
@@ -190,11 +191,10 @@ for counts in range(0,2):
                                                          df_inputs_prepr['purpose:vacation']])
     df_inputs_prepr['purpose:major_purch__car__home_impr'] = sum([df_inputs_prepr['purpose:major_purchase'], df_inputs_prepr['purpose:car'],
                                                                   df_inputs_prepr['purpose:home_improvement']])
-        
-    '''
-    Independent variables - Continuous 
-    term
-    '''
+         
+    #Independent variables - Continuous 
+    #term
+    
     #term:: 60 being the reference category
     df_inputs_prepr['term:36'] = np.where((df_inputs_prepr['term_int'] == 36), 1, 0)
     df_inputs_prepr['term:60'] = np.where((df_inputs_prepr['term_int'] == 60), 1, 0)
@@ -237,6 +237,12 @@ for counts in range(0,2):
     df_inputs_prepr['delinq_2yrs:1-3'] = np.where((df_inputs_prepr['delinq_2yrs']>=1)&(df_inputs_prepr['delinq_2yrs']<=3),1,0)
     df_inputs_prepr['delinq_2yrs:>=4'] = np.where((df_inputs_prepr['delinq_2yrs']>=4),1,0)
     
+    #inq_last_6mths
+    df_inputs_prepr['inq_last_6mths:0'] = np.where((df_inputs_prepr['inq_last_6mths']==0),1,0)
+    df_inputs_prepr['inq_last_6mths:1-2'] = np.where((df_inputs_prepr['inq_last_6mths']>=1)&(df_inputs_prepr['inq_last_6mths']<=2),1,0)
+    df_inputs_prepr['inq_last_6mths:3-6'] = np.where((df_inputs_prepr['inq_last_6mths']>=3)&(df_inputs_prepr['inq_last_6mths']<=6),1,0)
+    df_inputs_prepr['inq_last_6mths:>6'] = np.where((df_inputs_prepr['delinq_2yrs']>6),1,0)
+    
     #open_acc
     df_inputs_prepr['open_acc:0'] = np.where((df_inputs_prepr['open_acc']==0),1,0)
     df_inputs_prepr['open_acc:1-3'] = np.where((df_inputs_prepr['open_acc']>=1)&(df_inputs_prepr['open_acc']<=3),1,0)
@@ -259,7 +265,7 @@ for counts in range(0,2):
     
     #acc_now_delinq
     df_inputs_prepr['acc_now_delinq:0'] = np.where((df_inputs_prepr['acc_now_delinq']==0),1,0)
-    df_inputs_prepr['acc_now_delinq:>=0'] = np.where((df_inputs_prepr['acc_now_delinq']>=1),1,0)
+    df_inputs_prepr['acc_now_delinq:>=1'] = np.where((df_inputs_prepr['acc_now_delinq']>=1),1,0)
     
     #total_rev_hi_lim:: total revenue high limits
     df_inputs_prepr['total_rev_hi_lim:<=5K'] = np.where((df_inputs_prepr['total_rev_hi_lim']<=5000),1,0)
@@ -287,6 +293,7 @@ for counts in range(0,2):
     
     #dti
     df_inputs_prepr['dti:<=1.4'] = np.where((df_inputs_prepr['dti']<=1.4),1,0)
+    df_inputs_prepr['dti:1.4-3.5'] = np.where((df_inputs_prepr['dti']>1.4)&(df_inputs_prepr['dti']<=3.5),1,0)
     df_inputs_prepr['dti:3.5-7.7'] = np.where((df_inputs_prepr['dti']>3.5)&(df_inputs_prepr['dti']<=7.7),1,0)
     df_inputs_prepr['dti:7.7-10.5'] = np.where((df_inputs_prepr['dti']>7.7)&(df_inputs_prepr['dti']<=10.5),1,0)
     df_inputs_prepr['dti:10.5-16.1'] = np.where((df_inputs_prepr['dti']>10.5)&(df_inputs_prepr['dti']<=16.1),1,0)
@@ -311,50 +318,9 @@ for counts in range(0,2):
     df_inputs_prepr['mths_since_last_record:>=87'] = np.where((df_inputs_prepr['mths_since_last_delinq']>=87),1,0)
     
     counts += 1
-#loan_data_inputs_train.to_csv('csv/loan_data_inputs_train.csv')
-#loan_data_target_train.to_csv('csv/loan_data_targets_train.csv')
+
+#save processed data
+loan_data_inputs_train.to_csv('loan_data_inputs_train.csv')
+loan_data_targets_train.to_csv('loan_data_targets_train.csv')
 loan_data_inputs_test.to_csv('loan_data_inputs_test.csv')
 loan_data_targets_test.to_csv('loan_data_targets_test.csv')   
-######################
-#functions
-######################  
-'''
-woe_discrete:: automate the process for WOE calculation
-'''
-def woe_discrete(input_df, discrete_variable_name, good_bad_variable_df): 
-     #create a new DataFrame with only the discrete_variable_name and dependent variable
-    df = pd.concat([input_df[discrete_variable_name], good_bad_variable_df], axis = 1)
-    #add number of occurance (count) and mean non-default value to the dataframe
-    df = pd.concat([df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].count(),
-                    df.groupby(df.columns.values[0], as_index = False)[df.columns.values[1]].mean()], axis = 1)
-    #select variable name, occurance and probability of non-default
-    df = df.iloc[:, [0, 1, 3]]
-    #change column names
-    df.columns = [df.columns.values[0], 'n_obs', 'prop_good']
-    
-    #calculate probability of occurance for each discrete values
-    df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
-    # number of non-default observations
-    df['n_good'] = df['prop_good'] * df['n_obs']
-    #number of default observations
-    df['n_bad'] = (1 - df['prop_good']) * df['n_obs']
-    #probability of non-default for a discrete value (grade:A, B,C, etc)
-    df['prop_n_good'] = df['n_good'] / df['n_good'].sum()
-    #probability of default 
-    df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
-    #weight of evidence
-    df['WoE'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
-    #sort values according to WoE (weight of evidence)
-    df = df.sort_values(['WoE'])
-    df = df.reset_index(drop = True)
-    
-    #take the difference between non_default probability among each discrete values
-    df['diff_prop_good'] = df['prop_good'].diff().abs()
-    #take diff in WoE among each discrete values
-    df['diff_WoE'] = df['WoE'].diff().abs()
-    #caulculate information value
-    df['IV'] = (df['prop_n_good'] - df['prop_n_bad']) * df['WoE']
-    df['IV'] = df['IV'].sum()
-    
-    return df
-    

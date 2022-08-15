@@ -15,7 +15,7 @@ loan_data = pd.read_csv(data_file)
 
 '''
 prerocess CONTINEOUS variable
-Remove the unnecessary test from each row and then turn the remains into a nummerical value
+Remove the unnecessary text from each row and then turn the remains into a nummerical value
 
 4 variables are processed:
     (1) term
@@ -66,12 +66,12 @@ loan_data['mths_since_earliest_cr_line'] = round(pd.to_numeric(loan_data['earlie
 #last_pymnt_d::last payment date
 loan_data['last_pymnt_d_string'] = pd.to_datetime(loan_data['last_pymnt_d'],format = '%b-%y')
 loan_data['last_pymnt_d_string'].fillna(pd.to_datetime('2007-12-01'),inplace = True)
-loan_data['mths_since_last_delinq'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_pymnt_d_string'])/np.timedelta64(1,'M')))
+loan_data['mths_since_last_pymnt_d'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_pymnt_d_string'])/np.timedelta64(1,'M')))
 
 #last_credit_pull_d:: last credit pull date
 loan_data['last_credit_pull_d_string'] = pd.to_datetime(loan_data['last_credit_pull_d'],format = '%b-%y')
 loan_data['last_credit_pull_d_string'].fillna(pd.to_datetime('2007-05-01'),inplace = True)
-loan_data['mths_since_last_record'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_credit_pull_d_string'])/np.timedelta64(1,'M')))
+loan_data['mths_since_last_credit_pull_d'] = round(pd.to_numeric((pd.to_datetime('2017-12-01')-loan_data['last_credit_pull_d_string'])/np.timedelta64(1,'M')))
 
 '''
 Process 8 DISCRETE Variables
@@ -86,7 +86,7 @@ loan_data_dummies = [pd.get_dummies(loan_data['grade'],prefix = 'grade', prefix_
                      pd.get_dummies(loan_data['loan_status'], prefix = 'loan_status', prefix_sep = ':'),
                      pd.get_dummies(loan_data['purpose'], prefix = 'purpose', prefix_sep = ':'),
                      pd.get_dummies(loan_data['initial_list_status'], prefix = 'initial_list_status', prefix_sep = ':'),
-                    pd.get_dummies(loan_data['addr_state'], prefix = 'addr_state', prefix_sep = ':')]
+                     pd.get_dummies(loan_data['addr_state'], prefix = 'addr_state', prefix_sep = ':')]
     
 loan_data_dummies = pd.concat(loan_data_dummies, axis = 1)
 loan_data = pd.concat([loan_data,loan_data_dummies],axis = 1)
@@ -304,12 +304,14 @@ for counts in range(0,2):
     df_inputs_prepr['dti:>35'] = np.where((df_inputs_prepr['dti']>35),1,0)
     
     #mths_since_last_delinq
+    df_inputs_prepr['mths_since_last_delinq:Missing'] = np.where(df_inputs_prepr['mths_since_last_delinq'].isnull(),1,0)
     df_inputs_prepr['mths_since_last_delinq:0-3'] = np.where((df_inputs_prepr['mths_since_last_delinq']>=0) &(df_inputs_prepr['mths_since_last_delinq']<=3),1,0)
     df_inputs_prepr['mths_since_last_delinq:4-30'] = np.where((df_inputs_prepr['mths_since_last_delinq']>=4) &(df_inputs_prepr['mths_since_last_delinq']<=30),1,0)
     df_inputs_prepr['mths_since_last_delinq:31-56'] = np.where((df_inputs_prepr['mths_since_last_delinq']>=31) &(df_inputs_prepr['mths_since_last_delinq']<=56),1,0)
     df_inputs_prepr['mths_since_last_delinq:>=57'] = np.where((df_inputs_prepr['mths_since_last_delinq']>=57),1,0)
     
     #mths_since_last_record
+    df_inputs_prepr['mths_since_last_record:Missing'] = np.where(df_inputs_prepr['mths_since_last_record'].isnull(),1,0)
     df_inputs_prepr['mths_since_last_record:0-2'] = np.where((df_inputs_prepr['mths_since_last_record']>=0) &(df_inputs_prepr['mths_since_last_record']<=2),1,0)
     df_inputs_prepr['mths_since_last_record:3-20'] = np.where((df_inputs_prepr['mths_since_last_record']>=3) &(df_inputs_prepr['mths_since_last_record']<=20),1,0)
     df_inputs_prepr['mths_since_last_record:21-31'] = np.where((df_inputs_prepr['mths_since_last_record']>=21) &(df_inputs_prepr['mths_since_last_record']<=31),1,0)

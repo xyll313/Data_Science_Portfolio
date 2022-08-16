@@ -7,6 +7,6 @@
 	
 	A **capstone project** that predicts the success rate of Falcon 9 rocket first stage landing (**webscrapping** and API are used to obtain data).
 #
-* **Credit Risk Model**:The project first pre-processes customer info (data-cleaning), then uses **logistic  regression** to build a Probability of Default (PD) model and a scorecard so the model can be easily applied a wide range of users. Exposure at Default (EAD) and Loss given Default (LGD) are modelled by **beta regression**. Finally, the Expected Loss is computed as:
+* **Credit Risk Model**:The project first pre-processes customer info (data-cleaning), then uses **logistic  regression** to build a Probability of Default (PD) model and a scorecard so the model can be easily applied a wide range of users. Exposure at Default (EAD) and Loss given Default (LGD) are modelled by linear regression, which approximates a **beta regression**. Finally, the Expected Loss is computed as:
 
 	Expected Loss = PD x Exposure at default (EAD) x Loss given default (LGD)

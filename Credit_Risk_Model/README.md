@@ -32,4 +32,22 @@ A score card is created based on our PD model. The avaiable minimum and maximum 
 
 $$variable Score = variable Coef \frac{(max Score-min Score)}{(max Sum Coeff-min Sum Coeff)}$$
 
-Cut-offs for the PD model pre-determines the percentage of customers that would be approved/rejected. We used ROC curve to determine cut off rates 
+Cut-offs for the PD model pre-determines the percentage of customers that would be approved/rejected. We used ROC curve to determine cut off rates
+
+* **5_LGD_Model.ipynb**:
+
+The distribution for recovery rate is as follow and therefore we decided to use a two-stage process
+![image](https://user-images.githubusercontent.com/29717509/184869536-81abcf46-7574-4fea-af89-04a1aabde3c1.png)
+
+(1) A logistic regression to see whether the recovery rate is greater than 0
+(2) Use a multivariable linear regression model to model recovery rate
+
+* **6_EAD_Model.ipynb**:
+
+The distribution for CCF (the proportion of the original amount of the loan that is still outstanding at the moment when the borrower defaulted)  is as follows:
+the proportion of the original amount of the loan that is still outstanding at the moment when the borrower defaulted
+
+![image](https://user-images.githubusercontent.com/29717509/184873461-afc5326e-e420-4696-bdaa-9c515356fd86.png)
+
+Therefore we decided to use only a linear regression model 
+

@@ -11,3 +11,5 @@ The project works on stock closing price data in four markets (which are time se
 $$x_t = C + \phi x_{t-1} + \epsilon_t$$
 AR model works best with stationary data.
 FTSE price data are processed by an AR Model. We looked at Price (which is not stationary), Returns, Normalised Returns and residual (white noise).
+
+

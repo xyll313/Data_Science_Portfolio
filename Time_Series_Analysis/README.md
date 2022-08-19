@@ -10,11 +10,23 @@ The project works on stock closing price data in four markets (which are time se
 * **3_AR_Model.ipynb**: AR model is a linear model, where current period values are a sum of of past outcomes multiplied by a numeric factor:
 $$x_t = C + \phi x_{t-1} + \epsilon_t$$
 AR model works best with stationary data.
-FTSE price data are processed by an AR Model. We looked at Price (which is not stationary), Returns, Normalised Returns and residual (white noise).
+FTSE price data are processed by an AR Model. We used PACF to determine how many lags to include in our model. 
+We looked at Price (which is not stationary), Returns, Normalised Returns and residual (white noise).
 
-* **4_MA_Model.ipynb**: MA model is with marginal intigration 
+* **4_MA_Model.ipynb**: MA model is with marginal intigration and we use ACF to determine the number of lags required
+$$x_t = C + \theta_1 \epsilon_{t-1} + \epsilon_{t}$$
 
-* **5_ARIMA_Model.ipynb**:
-$$x_t = C + \phi x_{t-1} + \ceta \epsilon_{t-1} + \epsilon_t $$
+* **5_ARMA_Model.ipynb**: AR + MA model
+$$x_t = C + \phi x_{t-1} +  \theta_1 \epsilon_{t-1} + \epsilon_{t}$$
 
+* **6_ARIMA_Model.ipynb**:In addition to an ARMA(p,q) model, an ARIMA (p,d,q) model also differencing the original series d times (and hence would lose d observations)
 
+* **7_ARCH_Model.ipynb**:Autoregressive Conditional Heteroskedasticity Model. It is used to measure volatility
+For a simple ARCH(1, include only one previous value) model, we have:
+$$Var(y_t|y_{t-1}) =  \sigma^2_{t} = \alpha0 + \alpha_1 \epsilon_{t-1}^2$$
+where $\alpha_1$ is approximate to \theta_1 in ARIMA models. 
+
+At higher orders, we have: $\sigma^2_{t} = \alpha0 + \alpha_1 \epsilon_{t-1}^2 + \alpha_2 \epsilon_{t-2}^2$
+
+$$y_t = \mu_t + \epsilon_t$$ 
+where $\mu$ is the mean, $\mu_t = C + \phi_1 \mu_{t-1}$ and variance as shown above

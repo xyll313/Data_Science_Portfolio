@@ -1,0 +1,1 @@
+## 1. Movie_Recommender: A simple NLP project based on Term Frequency that reads in a moive's 'genres' and 'keywords', then compute cosine similarity with the movie database. A list of recommended movie is then given based on cosine similarity
